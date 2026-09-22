@@ -1,0 +1,32 @@
+<h2>Productos</h2>
+
+<!-- Solo el rol Admin puede crear productos (el backend tambien lo valida) -->
+<section *ngIf="auth.esAdmin()">
+  <h3>Nuevo producto</h3>
+  <input [(ngModel)]="nuevo.nombre"    name="nombre"    placeholder="Nombre">
+  <input [(ngModel)]="nuevo.precio"    name="precio"    type="number" placeholder="Precio">
+  <input [(ngModel)]="nuevo.stock"     name="stock"     type="number" placeholder="Stock">
+  <input [(ngModel)]="nuevo.categoria" name="categoria" placeholder="Categoria">
+  <button (click)="guardar()">Guardar</button>
+</section>
+
+<p *ngIf="cargando">Cargando...</p>
+<p class="error" *ngIf="error">{{ error }}</p>
+
+<table *ngIf="productos.length">
+  <thead>
+    <tr><th>ID</th><th>Nombre</th><th>Categoria</th><th>Precio</th><th>Stock</th><th *ngIf="auth.esAdmin()"></th></tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let p of productos">
+      <td>{{ p.id }}</td>
+      <td>{{ p.nombre }}</td>
+      <td>{{ p.categoria }}</td>
+      <td>{{ p.precio | currency:'CLP':'symbol-narrow':'1.0-0' }}</td>
+      <td>{{ p.stock }}</td>
+      <td *ngIf="auth.esAdmin()"><button class="peligro" (click)="eliminar(p.id)">Eliminar</button></td>
+    </tr>
+  </tbody>
+</table>
+
+<p *ngIf="!cargando && !productos.length">No hay productos registrados.</p>

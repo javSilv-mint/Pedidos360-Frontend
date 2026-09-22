@@ -1,0 +1,33 @@
+<h2>Clientes</h2>
+
+<section>
+  <h3>Nuevo cliente</h3>
+  <input [(ngModel)]="nuevo.rut"       name="rut"       placeholder="RUT">
+  <input [(ngModel)]="nuevo.nombre"    name="nombre"    placeholder="Nombre">
+  <input [(ngModel)]="nuevo.apellido"  name="apellido"  placeholder="Apellido">
+  <input [(ngModel)]="nuevo.email"     name="email"     placeholder="Email">
+  <input [(ngModel)]="nuevo.telefono"  name="telefono"  placeholder="Telefono">
+  <input [(ngModel)]="nuevo.direccion" name="direccion" placeholder="Direccion">
+  <button (click)="guardar()">Guardar</button>
+</section>
+
+<p *ngIf="cargando">Cargando...</p>
+<p class="error" *ngIf="error">{{ error }}</p>
+
+<table *ngIf="clientes.length">
+  <thead>
+    <tr><th>ID</th><th>RUT</th><th>Nombre</th><th>Email</th><th>Telefono</th><th></th></tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let c of clientes">
+      <td>{{ c.id }}</td>
+      <td>{{ c.rut }}</td>
+      <td>{{ c.nombre }} {{ c.apellido }}</td>
+      <td>{{ c.email }}</td>
+      <td>{{ c.telefono }}</td>
+      <td><button class="peligro" (click)="eliminar(c.id)">Eliminar</button></td>
+    </tr>
+  </tbody>
+</table>
+
+<p *ngIf="!cargando && !clientes.length">No hay clientes registrados.</p>

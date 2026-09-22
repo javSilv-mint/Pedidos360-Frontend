@@ -1,0 +1,25 @@
+<header class="barra">
+  <h1>{{ titulo }}</h1>
+
+  <nav>
+    <a routerLink="/productos" routerLinkActive="activo">Productos</a>
+    <a routerLink="/pedidos"   routerLinkActive="activo">Pedidos</a>
+    @if (auth.esAdmin()) {
+      <a routerLink="/clientes" routerLinkActive="activo">Clientes</a>
+    }
+  </nav>
+
+  <div class="sesion">
+    @if (auth.autenticado()) {
+      <span>{{ auth.cuenta()?.name || auth.cuenta()?.username }}</span>
+      <span class="rol">{{ auth.roles().length ? auth.roles().join(', ') : 'sin rol' }}</span>
+      <button class="peligro" (click)="logout()">Cerrar sesion</button>
+    } @else {
+      <button (click)="login()">Iniciar sesion</button>
+    }
+  </div>
+</header>
+
+<main class="contenido">
+  <router-outlet />
+</main>

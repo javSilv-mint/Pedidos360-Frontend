@@ -1,0 +1,58 @@
+<h2>{{ auth.esAdmin() ? 'Todos los pedidos' : 'Mis pedidos' }}</h2>
+
+<section>
+  <h3>Nuevo pedido</h3>
+
+  <label>Cliente ID:
+    <input [(ngModel)]="clienteId" name="clienteId" type="number">
+  </label>
+  <label>Direccion:
+    <input [(ngModel)]="direccionEntrega" name="direccion" placeholder="Direccion de entrega">
+  </label>
+
+  <div>
+    <select [(ngModel)]="productoSeleccionado" name="producto">
+      <option [ngValue]="undefined">-- Elegir producto --</option>
+      <option *ngFor="let p of productos" [ngValue]="p.id">
+        {{ p.nombre }} ({{ p.precio | currency:'CLP':'symbol-narrow':'1.0-0' }})
+      </option>
+    </select>
+    <input [(ngModel)]="cantidad" name="cantidad" type="number" min="1">
+    <button (click)="agregarAlCarrito()">Agregar</button>
+  </div>
+
+  <ul *ngIf="carrito.length">
+    <li *ngFor="let item of carrito; let i = index">
+      {{ item.nombreProducto }} x{{ item.cantidad }} =
+      {{ item.precioUnitario * item.cantidad | currency:'CLP':'symbol-narrow':'1.0-0' }}
+      <button class="peligro" (click)="quitarDelCarrito(i)">x</button>
+    </li>
+  </ul>
+
+  <p *ngIf="carrito.length">
+    <strong>Total: {{ totalCarrito | currency:'CLP':'symbol-narrow':'1.0-0' }}</strong>
+  </p>
+
+  <button (click)="confirmarPedido()" [disabled]="!carrito.length">Confirmar pedido</button>
+</section>
+
+<p *ngIf="cargando">Cargando...</p>
+<p class="error" *ngIf="error">{{ error }}</p>
+
+<table *ngIf="pedidos.length">
+  <thead>
+    <tr><th>ID</th><th>Cliente</th><th>Fecha</th><th>Estado</th><th>Total</th><th></th></tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let ped of pedidos">
+      <td>{{ ped.id }}</td>
+      <td>{{ ped.clienteId }}</td>
+      <td>{{ ped.fecha | date:'dd-MM-yyyy HH:mm' }}</td>
+      <td>{{ ped.estado }}</td>
+      <td>{{ ped.total | currency:'CLP':'symbol-narrow':'1.0-0' }}</td>
+      <td><button class="peligro" (click)="cancelar(ped.id)">Cancelar</button></td>
+    </tr>
+  </tbody>
+</table>
+
+<p *ngIf="!cargando && !pedidos.length">No hay pedidos registrados.</p>
