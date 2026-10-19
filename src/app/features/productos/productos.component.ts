@@ -53,7 +53,7 @@ export class ProductosComponent implements OnInit {
     if (!id) return;
     this.service.eliminar(id).subscribe({
       next: () => this.cargar(),
-      error: err => { this.error = 'Error al eliminar'; console.error(err); }
+      error: err => { this.error = mensajeHttp(err, 'Error al eliminar'); console.error(err); }
     });
   }
 }

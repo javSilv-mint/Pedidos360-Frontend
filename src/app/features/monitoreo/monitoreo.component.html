@@ -1,0 +1,58 @@
+<h2>Monitoreo de mensajeria (DLX / DLQ)</h2>
+
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+@if (estado(); as e) {
+  @if (e.alerta) {
+    <div class="alerta" role="alert">
+      ALERTA: {{ e.dlq.mensajes }} mensaje(s) en {{ e.dlq.nombre }} (umbral {{ e.umbralAlerta }}).
+      Revisa los logs <code>evento=mensaje_rechazado</code> y el header <code>x-death</code>.
+    </div>
+  }
+
+  <section class="tarjetas">
+    @for (cola of [e.principal, e.dlq]; track cola.nombre) {
+      <div class="tarjeta" [class.dlq]="cola === e.dlq">
+        <h3>{{ cola.nombre }}</h3>
+        @if (cola.existe) {
+          <p class="numero">{{ cola.mensajes }}</p>
+          <p>mensajes listos &middot; {{ cola.consumidores }} consumidor(es)</p>
+        } @else {
+          <p class="error">La cola no existe en el broker</p>
+        }
+      </div>
+    }
+  </section>
+  <p class="nota">Actualizado {{ e.fecha | date:'HH:mm:ss' }} (cada 5 s)</p>
+} @else if (!error()) {
+  <p>Cargando estado de las colas...</p>
+}
+
+<section>
+  <h3>Publicar evento pedido.creado</h3>
+  <div class="botones">
+    @for (esc of escenarios; track esc.clave) {
+      <button (click)="enviar(esc)" [title]="esc.esperado">{{ esc.etiqueta }}</button>
+    }
+  </div>
+</section>
+
+@if (enviados().length) {
+  <table>
+    <thead>
+      <tr><th>Hora</th><th>Pedido</th><th>Escenario</th><th>Resultado esperado</th></tr>
+    </thead>
+    <tbody>
+      @for (ev of enviados(); track ev.pedidoId) {
+        <tr>
+          <td>{{ ev.hora | date:'HH:mm:ss' }}</td>
+          <td>{{ ev.pedidoId }}</td>
+          <td>{{ ev.escenario }}</td>
+          <td>{{ ev.esperado }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

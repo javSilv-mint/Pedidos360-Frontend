@@ -59,7 +59,8 @@ export function msalInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, string[]>([
     [`${environment.apiProductos}*`, scopes],
     [`${environment.apiPedidos}*`, scopes],
-    [`${environment.apiClientes}*`, scopes]
+    [`${environment.apiClientes}*`, scopes],
+    [`${environment.apiRabbitLab}*`, scopes]
   ]);
   return {
     interactionType: InteractionType.Redirect,

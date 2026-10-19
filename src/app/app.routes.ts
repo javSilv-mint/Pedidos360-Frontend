@@ -24,6 +24,12 @@ export const routes: Routes = [
       import('./features/clientes/clientes.component').then(m => m.ClientesComponent)
   },
   {
+    path: 'monitoreo',
+    canActivate: [MsalGuard, adminGuard],   // solo rol Admin
+    loadComponent: () =>
+      import('./features/monitoreo/monitoreo.component').then(m => m.MonitoreoComponent)
+  },
+  {
     path: 'sin-permiso',
     loadComponent: () =>
       import('./features/sin-permiso/sin-permiso.component').then(m => m.SinPermisoComponent)
