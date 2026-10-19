@@ -54,11 +54,20 @@ export class AuthService {
   }
 
   logout(): void {
-    this.msal.logoutRedirect({ postLogoutRedirectUri: environment.azure.postLogoutRedirectUri });
+    this.claims.set(null);
+    this.cuenta.set(null);
+    this.msal.logoutRedirect({
+      account: this.msal.instance.getActiveAccount() ?? undefined,
+      postLogoutRedirectUri: environment.azure.postLogoutRedirectUri
+    });
   }
 
-  /** Espera a que los roles esten cargados (lo usa el guard de Admin). */
+  /**
+   * Espera a que MSAL no tenga interacciones en curso (p.ej. procesando el redirect)
+   * y a que los roles esten cargados. Lo usan el guard de Admin y las vistas.
+   */
   async rolesCargados(): Promise<string[]> {
+    await firstValueFrom(this.broadcast.inProgress$.pipe(filter(e => e === InteractionStatus.None)));
     if (!this.claims()) await this.sincronizar();
     return this.roles();
   }

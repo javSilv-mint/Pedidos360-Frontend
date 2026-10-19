@@ -26,10 +26,9 @@ export interface Pedido {
   detalles: DetallePedido[];
 }
 
-/** Payload que espera el endpoint POST /api/pedidos */
+/** Payload que espera el endpoint POST /api/pedidos (el email del dueno lo toma el backend del JWT). */
 export interface CrearPedidoRequest {
   clienteId: number;
-  clienteEmail?: string;
   direccionEntrega?: string;
   items: {
     productoId: number;

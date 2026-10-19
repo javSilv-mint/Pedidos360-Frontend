@@ -3,9 +3,13 @@
 <section>
   <h3>Nuevo pedido</h3>
 
-  <label>Cliente ID:
-    <input [(ngModel)]="clienteId" name="clienteId" type="number">
-  </label>
+  @if (auth.esAdmin()) {
+    <label>Cliente ID:
+      <input [(ngModel)]="clienteId" name="clienteId" type="number" min="1">
+    </label>
+  } @else if (sinPerfil) {
+    <p class="error">Aun no tienes un perfil de cliente registrado; no puedes crear pedidos.</p>
+  }
   <label>Direccion:
     <input [(ngModel)]="direccionEntrega" name="direccion" placeholder="Direccion de entrega">
   </label>
@@ -33,7 +37,7 @@
     <strong>Total: {{ totalCarrito | currency:'CLP':'symbol-narrow':'1.0-0' }}</strong>
   </p>
 
-  <button (click)="confirmarPedido()" [disabled]="!carrito.length">Confirmar pedido</button>
+  <button (click)="confirmarPedido()" [disabled]="!carrito.length || !clienteId">Confirmar pedido</button>
 </section>
 
 <p *ngIf="cargando">Cargando...</p>
@@ -50,7 +54,9 @@
       <td>{{ ped.fecha | date:'dd-MM-yyyy HH:mm' }}</td>
       <td>{{ ped.estado }}</td>
       <td>{{ ped.total | currency:'CLP':'symbol-narrow':'1.0-0' }}</td>
-      <td><button class="peligro" (click)="cancelar(ped.id)">Cancelar</button></td>
+      <td>
+        <button class="peligro" *ngIf="esCancelable(ped)" (click)="cancelar(ped.id)">Cancelar</button>
+      </td>
     </tr>
   </tbody>
 </table>

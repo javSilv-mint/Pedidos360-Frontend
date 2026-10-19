@@ -1,21 +1,26 @@
+// ===== Desarrollo local: cada microservicio en su puerto (ver README del backend) =====
 export const environment = {
   production: false,
+
+  apiProductos: 'http://localhost:8081/api/productos',
+  apiPedidos: 'http://localhost:8082/api/pedidos',
+  apiClientes: 'http://localhost:8083/api/clientes',
+  // rabbit-lab (guia 2.2.3): publicador de eventos + monitoreo de cola/DLQ
+  apiRabbitLab: 'http://localhost:8080/api',
+
   azure: {
-    // ID de la aplicación de Frontend registrada en Azure (SPA)
+    // Application (client) ID del registro SPA en Entra External ID
     clientId: '02281fe3-32a9-4667-91fc-50ece21860f1',
-    
-    // ID de tu Inquilino / Directorio de Azure Entra ID
-    tenantId: 'd24bf402-e7a2-4d9c-844f-18e7f6229529',
-    
-    // Endpoint de autenticación con tu Tenant ID
-    authority: 'https://login.microsoftonline.com/d24bf402-e7a2-4d9c-844f-18e7f6229529',
-    
-    // URI a la que redirige tras autenticarse
+
+    // Tenant External ID (CIAM): el authority DEBE ser ciamlogin.com para que el
+    // claim "iss" del token coincida con AZURE_ISSUER_URI que valida el backend.
+    authority: 'https://ejemduoc123.ciamlogin.com/d24bf402-e7a2-4d9c-844f-18e7f6229529',
+    knownAuthority: 'ejemduoc123.ciamlogin.com',
+
     redirectUri: 'http://localhost:4200',
-    
-    // Ámbito (scope) expuesto por tu API Backend
-    protectedResourceScopes: ['api://b7415d24-0ba0-4650-8a44-e5830fb21eab/.default']
-  },
-  // URL base de tu backend o API Gateway
-  apiBaseUrl: 'http://localhost:8080'
+    postLogoutRedirectUri: 'http://localhost:4200',
+
+    // Scope delegado expuesto por el registro pedidos360-backend-api
+    apiScope: 'api://b7415d24-0ba0-4650-8a44-e5830fb21eab/access_as_user'
+  }
 };
